@@ -13,6 +13,7 @@ import { createFileRoute } from '@tanstack/react-router'
 // Import Routes
 
 import { Route as rootRoute } from './routes/__root'
+import { Route as DashboardImport } from './routes/dashboard'
 
 // Create Virtual Routes
 
@@ -25,6 +26,11 @@ const WelcomePageLazyRoute = WelcomePageLazyImport.update({
   path: '/WelcomePage',
   getParentRoute: () => rootRoute,
 } as any).lazy(() => import('./routes/WelcomePage.lazy').then((d) => d.Route))
+
+const DashboardRoute = DashboardImport.update({
+  path: '/dashboard',
+  getParentRoute: () => rootRoute,
+} as any)
 
 const IndexLazyRoute = IndexLazyImport.update({
   path: '/',
@@ -42,6 +48,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexLazyImport
       parentRoute: typeof rootRoute
     }
+    '/dashboard': {
+      id: '/dashboard'
+      path: '/dashboard'
+      fullPath: '/dashboard'
+      preLoaderRoute: typeof DashboardImport
+      parentRoute: typeof rootRoute
+    }
     '/WelcomePage': {
       id: '/WelcomePage'
       path: '/WelcomePage'
@@ -56,36 +69,41 @@ declare module '@tanstack/react-router' {
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexLazyRoute
+  '/dashboard': typeof DashboardRoute
   '/WelcomePage': typeof WelcomePageLazyRoute
 }
 
 export interface FileRoutesByTo {
   '/': typeof IndexLazyRoute
+  '/dashboard': typeof DashboardRoute
   '/WelcomePage': typeof WelcomePageLazyRoute
 }
 
 export interface FileRoutesById {
   __root__: typeof rootRoute
   '/': typeof IndexLazyRoute
+  '/dashboard': typeof DashboardRoute
   '/WelcomePage': typeof WelcomePageLazyRoute
 }
 
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/WelcomePage'
+  fullPaths: '/' | '/dashboard' | '/WelcomePage'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/WelcomePage'
-  id: '__root__' | '/' | '/WelcomePage'
+  to: '/' | '/dashboard' | '/WelcomePage'
+  id: '__root__' | '/' | '/dashboard' | '/WelcomePage'
   fileRoutesById: FileRoutesById
 }
 
 export interface RootRouteChildren {
   IndexLazyRoute: typeof IndexLazyRoute
+  DashboardRoute: typeof DashboardRoute
   WelcomePageLazyRoute: typeof WelcomePageLazyRoute
 }
 
 const rootRouteChildren: RootRouteChildren = {
   IndexLazyRoute: IndexLazyRoute,
+  DashboardRoute: DashboardRoute,
   WelcomePageLazyRoute: WelcomePageLazyRoute,
 }
 
@@ -102,11 +120,15 @@ export const routeTree = rootRoute
       "filePath": "__root.tsx",
       "children": [
         "/",
+        "/dashboard",
         "/WelcomePage"
       ]
     },
     "/": {
       "filePath": "index.lazy.tsx"
+    },
+    "/dashboard": {
+      "filePath": "dashboard.tsx"
     },
     "/WelcomePage": {
       "filePath": "WelcomePage.lazy.tsx"
